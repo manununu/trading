@@ -21,8 +21,8 @@ def main():
 
     # Variables
     filename = args.file
-    maxema = args.maxema
-    steps = args.steps 
+    maxema = int(args.maxema)
+    steps = int(args.steps) 
     
     # Checking arguments
     if(filename == None):
