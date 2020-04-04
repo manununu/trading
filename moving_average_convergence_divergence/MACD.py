@@ -14,7 +14,7 @@ def main():
     # Argument parser
     parser = argparse.ArgumentParser(description='Get most profitable moving averages for MACD strategy.') 
     parser.add_argument('-f', '--file', type=argparse.FileType('r'), help='Input csv file with no header and the following columns: date, high, low, close')
-    parser.add_argument('-o', '--output', default=dir+'/output.csv', help='Specify output file for results. Default: output.csv')
+    #parser.add_argument('-o', '--output', default=dir+'/output.csv', help='Specify output file for results. Default: output.csv')
     parser.add_argument('-m', '--maxema', default=100, help='Specify the maximum EMA')
     parser.add_argument('-n', '--steps', default=10, help='Specify step size. E.g. when maximum EMA is 6 and step size equals 2, EMAs 2/4/6 are used.')
     args = parser.parse_args()
