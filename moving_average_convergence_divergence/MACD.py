@@ -85,6 +85,8 @@ def main():
                     indicator_result = sum(deltas)
                     results = results.append({'indicators': indicator_name, 'result': indicator_result}, ignore_index=True)
             progress = round((1/len(df.columns[5:]))*100, 2)
+            if short_ema == max(df.columns):
+                progress = progress + 1 # to resolve rounding issues
             bar.next(progress)
         print('')
         print('')
