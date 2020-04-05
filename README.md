@@ -8,6 +8,6 @@ python3 MACD.py -h
 ```
 
 ```bash
-python3 MACD.py -f data.csv -m 1000 -n 50
+python3 MACD.py -f sample_data/GBPJPY_20191201_20200327/data.csv -m 1500 -n 50
 ```
 
