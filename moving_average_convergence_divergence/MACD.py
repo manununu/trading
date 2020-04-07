@@ -12,7 +12,7 @@ def main():
 
     # Argument parser
     parser = argparse.ArgumentParser(description='Get most profitable moving averages for MACD strategy.') 
-    parser.add_argument('-f', '--file', type=argparse.FileType('r'), help='Input csv file with no header and the following columns: date, high, low, close')
+    parser.add_argument('-f', '--file', type=argparse.FileType('r'), help='Input csv file with no header and the following columns: date, open, high, low, close')
     parser.add_argument('-o', '--outfile', default=dir+'/output.csv', help='Specify output file for results. Default: %(default)s')
     parser.add_argument('-m', '--maxema', default=100, help='Specify the maximum EMA. Default: 100')
     parser.add_argument('-n', '--steps', default=10, help='Specify step size. Default: 10. E.g. when maximum EMA is 6 and step size equals 2, EMAs 2/4/6 are used.')
@@ -20,7 +20,7 @@ def main():
 
     # Variables
     filename = args.file
-    outputfile = args.outfile
+    outfile = args.outfile
     maxema = int(args.maxema)
     steps = int(args.steps) 
     
@@ -95,8 +95,8 @@ def main():
         print('')
         print('-------------------------------------------')
         print('')
-        print('Writing Results to out.csv')
-        results.to_csv(output_file, index=False)
+        print('Writing Results to ' + str(outfile))
+        results.to_csv(outfile, index=False)
         print('[+] Best result: ' + str(round(results.result.max(), 2)))
         print('[+] Best indicator: ' + results['indicators'][results.result.idxmax()])
 
