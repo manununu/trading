@@ -7,7 +7,7 @@ python3 MACD.py -h
 ```
 
 ```bash
-python3 MACD.py -f sample_data/GBPJPY_20191201_20200327/data.csv -m 1500 -n 50
+python3 MACD.py -f sample_data/GBPJPY_20191201_20200327/sub_data.csv -m 1500 -n 50 -o sub_1500_50.csv
 ```
 ### Example output
 ```
@@ -15,10 +15,11 @@ python3 MACD.py -f sample_data/GBPJPY_20191201_20200327/data.csv -m 1500 -n 50
 
 [i] Calculating EMAs...
 
-[i] Processing... |############################### | 100/100
+[i] Processing... |################################| 100/100
 
 -------------------------------------------
 
-[+] Best result: -41.34
-[+] Best indicator: EMA50:EMA100
+[+] Writing Results to sub_1500_50.csv
+[+] Best result: 9.51
+[+] Best indicator: EMA1750:EMA2000
 ```

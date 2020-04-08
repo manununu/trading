@@ -95,7 +95,7 @@ def main():
         print('')
         print('-------------------------------------------')
         print('')
-        print('Writing Results to ' + str(outfile))
+        print('[+] Writing Results to ' + str(outfile))
         results.to_csv(outfile, index=False)
         print('[+] Best result: ' + str(round(results.result.max(), 2)))
         print('[+] Best indicator: ' + results['indicators'][results.result.idxmax()])
