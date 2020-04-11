@@ -131,12 +131,12 @@ def main():
 
     ## Regular mode 
     # Calculating EMA's
-    print('[+] Calculating EMAs...')
+    print('[+] Calculating EMAs..')
     calc_emas(df, steps, maxema)
 
     # Start processing
     current_progress = 0
-    with Bar('[+] Calculating best EMAs...') as bar:
+    with Bar('[+] Calculating best EMAs..') as bar:
         progress = 1 / sum([x-1 for x in list(range(1,len(df.columns[5:])+1))]) * 100
         for short_ema in df.columns[5:]:
             short_ema_index = int(''.join(filter(str.isdigit, short_ema)))

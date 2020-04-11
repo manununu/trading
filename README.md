@@ -21,8 +21,8 @@ python3 MACD.py -f sample_data/GBPJPY_20191201_20200327/sub_data.csv -d 1000 -n 
 ### Example output
 ```
 [+] Reading in data..
-[+] Calculating EMAs...
-[+] Calculating best EMAs... |################################| 100/100
+[+] Calculating EMAs..
+[+] Calculating best EMAs.. |################################| 100/100
 -------------------------------
 [+] Best indicator: EMA500 / EMA1000
 [+] Result: 1.64
