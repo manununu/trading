@@ -1,4 +1,3 @@
-# todo: investigate bug: why ema9000:ema1000 = 0?? but when run with test.py not???
 # -*- encoding: utf-8 -*-
 import pandas as pd
 from datetime import datetime as dt
@@ -7,6 +6,7 @@ import os
 from progress.bar import Bar
 import multiprocessing
 import plotly.express as px
+import plotly.graph_objs as go
 
 dir = os.getcwd()
 
@@ -16,7 +16,7 @@ def calc_emas(df, steps, maxema):
             col_name = 'EMA' + str(i)
             df[col_name] = df['close'].ewm(span=i, adjust=False).mean()
 
-def calc_best_emas(df, short_ema, long_ema):
+def calc_best_emas(df, short_ema, long_ema, debug):
     deltas = []
     price_changes = []
     delta = 0
@@ -34,10 +34,23 @@ def calc_best_emas(df, short_ema, long_ema):
                 if(len(price_changes)>1):
                     delta = round(df['low'][price_changes[-2]] - df['high'][i], 6)
                     deltas.append(delta)
+                    if debug:
+                        print('[i] Bullish..')
+                        print('[i] ' + ' '.join(map(str, list(df.iloc[i]))))
+                        print('[i] Last delta: ' + str(delta))
+                        print('[i] Current sum of deltas: ', str(sum(deltas)))
+                        print('- ' * 20)
             else:
                 if(len(price_changes)>1):
                     delta = round(df['low'][i] - df['high'][price_changes[-2]], 6)
                     deltas.append(delta)
+                    if debug:
+                        print('[i] Bearish..')
+                        print('[i] ' + ' '.join(map(str, list(df.iloc[i]))))
+                        print('[i] Last delta: ' + str(delta))
+                        print('[i] Current sum of deltas: ', str(sum(deltas)))
+                        print('- ' * 20)
+
             initial_state = state
     indicator_name = short_ema + ' / ' + long_ema
     indicator_result = sum(deltas)
@@ -52,7 +65,8 @@ def main():
     parser.add_argument('-m', '--maxema', default=100, help='Specify the maximum EMA. Default: 100')
     parser.add_argument('-n', '--steps', default=10, help='Specify step size. Default: 10. E.g. when maximum EMA is 6 and step size equals 2, EMAs 2/4/6 are used.')
     parser.add_argument('-p', '--processes', default=4, help='Specify number of cores used for multiprocessing. Default: 4.')
-    parser.add_argument('-g', '--graph', action='store_true', help='Specify this flag without a value to get a plot of results.')
+    parser.add_argument('-g', '--graph', action='store_true', help='Set this flag to get a plot of results.')
+    parser.add_argument('-d', '--debug', nargs=2, help='Set this flag to run debug mode. If this flag is set, only the two given EMAs getting calculated with verbose output.')
     args = parser.parse_args()
 
     # Variables
@@ -82,12 +96,44 @@ def main():
         exit()
 
     # Checking if default values were used
-    if(maxema == 100 and steps == 10):
+    if(maxema == 100 and steps == 10 and args.debug == None):
         print('[i] Default values used for max_ema and steps..')
     
+    ## Debug mode
+    if args.debug != None:
+        print('[!] Debug mode..')
+        debug_short_ema_num, debug_long_ema_num = args.debug
+        debug_short_ema = "EMA" + debug_short_ema_num
+        debug_long_ema = "EMA" + debug_long_ema_num
+        df[debug_short_ema] = df['close'].ewm(span=int(debug_short_ema_num), adjust=False).mean()
+        df[debug_long_ema] = df['close'].ewm(span=int(debug_long_ema_num), adjust=False).mean()
+        result = calc_best_emas(df, debug_short_ema, debug_long_ema, True)
+        result = pd.DataFrame(result.items(), columns=['indicator', 'result'])
+        print('# ' * 20)
+        print('[i] Final result: ' + str(result['result'][0]))
+        # Plot
+        fig = px.line(df, x='date', y='close')
+        fig.add_trace(go.Scatter(
+            x=df['date'], 
+            y=df[debug_short_ema],
+            name=debug_short_ema
+        ))
+        fig.add_trace(go.Scatter(
+            x=df['date'], 
+            y=df[debug_long_ema],
+            name=debug_long_ema
+        ))
+        fig.update_layout(
+            xaxis_type="category"
+        )
+        fig.show()
+        exit() 
+
+    ## Regular mode 
     # Calculating EMA's
     print('[+] Calculating EMAs...')
     calc_emas(df, steps, maxema)
+
     # Start processing
     current_progress = 0
     with Bar('[+] Calculating best EMAs...') as bar:
@@ -97,7 +143,7 @@ def main():
             for long_ema in df.columns[5:]:
                 long_ema_index = int(''.join(filter(str.isdigit, long_ema)))
                 if short_ema_index < long_ema_index:
-                    process = pool.apply_async(calc_best_emas, args=(df, short_ema, long_ema,), callback=results.update)
+                    process = pool.apply_async(calc_best_emas, args=(df, short_ema, long_ema, False), callback=results.update)
                     process.wait()
                     bar.next(progress)
                     current_progress += progress
