@@ -1,5 +1,7 @@
 # Trading
+
 :information_source: Check out the repository from [terukusu](https://github.com/terukusu/download-tick-from-dukascopy) for downloading data (dukascopy)
+
 ---
 ## Moving Average Convergence Divergence (MACD)
 ### Description
