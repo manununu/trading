@@ -3,7 +3,15 @@
 
 ## Moving Average Convergence Divergence (MACD)
 ### Description
-Get the most profitable exponential moving averages for MACD strategy. The result is the sum of all delta values.
+Get the most profitable exponential moving averages for MACD strategy. 
+
+### Install 
+Install python3 and python3-pip.
+To install the dependencies run the following command:
+```bash
+sudo pip3 install -r requirements.txt
+```
+
 ### Usage
 ```bash
 python3 MACD.py -h # for help

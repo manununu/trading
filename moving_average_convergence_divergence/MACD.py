@@ -59,7 +59,7 @@ def calc_best_emas(df, short_ema, long_ema, debug):
 def main():
 
     # Argument parser
-    parser = argparse.ArgumentParser(description='Get most profitable moving averages for MACD strategy. The result is the sum of all delta values.') 
+    parser = argparse.ArgumentParser(description='Get most profitable moving averages for MACD strategy.') 
     parser.add_argument('-f', '--file', type=argparse.FileType('r'), help='Input csv file with no header and the following columns: date, open, high, low, close')
     parser.add_argument('-o', '--outfile', default=None, help='Specify output file to save results in CSV format.')
     parser.add_argument('-m', '--maxema', default=100, help='Specify the maximum EMA. Default: 100')

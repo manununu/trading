@@ -1,0 +1,7 @@
+pandas
+datetime
+argparse
+os
+progress
+multiprocessing
+plotly
