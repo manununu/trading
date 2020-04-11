@@ -2,7 +2,7 @@
 :information_source: Check out the repository from [terukusu](https://github.com/terukusu/download-tick-from-dukascopy) for downloading data (dukascopy)
 ## Moving Average Convergence Divergence (MACD)
 ### Description
-This is a tool to evaluate the best two EMA's for the MACD strategy. The result is the sum of all delta values.
+Get the most profitable exponential moving averages for MACD strategy. The result is the sum of all delta values.
 ### Usage
 ```bash
 python3 MACD.py -h
