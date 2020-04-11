@@ -53,6 +53,7 @@ def main():
     parser.add_argument('-o', '--outfile', default=dir+'/output.csv', help='Specify output file for results. Default: %(default)s')
     parser.add_argument('-m', '--maxema', default=100, help='Specify the maximum EMA. Default: 100')
     parser.add_argument('-n', '--steps', default=10, help='Specify step size. Default: 10. E.g. when maximum EMA is 6 and step size equals 2, EMAs 2/4/6 are used.')
+    parser.add_argument('-p', '--processes', default=4, help='Specify number of cores used for multiprocessing. Default: 4.')
     args = parser.parse_args()
 
     # Variables
@@ -60,7 +61,9 @@ def main():
     outfile = args.outfile
     maxema = int(args.maxema)
     steps = int(args.steps) 
-    pool = multiprocessing.Pool(4)
+    n_processes = int(args.processes)
+    print(n_processes)
+    pool = multiprocessing.Pool(processes=n_processes)
     results = []
     
     # Checking arguments
