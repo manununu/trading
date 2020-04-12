@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime as dt
 import argparse 
 import os
+from statistics import mean, median
 from progress.bar import Bar
 import multiprocessing
 import plotly.express as px
@@ -52,9 +53,16 @@ def calc_best_emas(df, short_ema, long_ema, debug):
                         print('- ' * 20)
 
             initial_state = state
-    indicator_name = short_ema + ' / ' + long_ema
-    indicator_result = sum(deltas)
-    return {indicator_name: indicator_result}
+
+    indicator_name_sum = short_ema + '_' + long_ema + '_SUM'
+    indicator_name_avg = short_ema + '_' + long_ema + '_AVG'
+    indicator_name_med = short_ema + '_' + long_ema + '_MED'
+    indicator_result_sum = sum(deltas)
+    indicator_result_avg = mean(deltas)
+    indicator_result_med = median(deltas)
+    return {indicator_name_sum: indicator_result_sum, 
+            indicator_name_avg: indicator_result_avg, 
+            indicator_name_med: indicator_result_med}
 
 def main():
 
@@ -66,19 +74,19 @@ def main():
     parser.add_argument('-n', '--steps', default=10, help='Specify step size. Default: 10. E.g. when maximum EMA is 6 and step size equals 2, EMAs 2/4/6 are used.')
     parser.add_argument('-s', '--start', default=0, help='Specify EMA to start with. Default: 0.')
     parser.add_argument('-p', '--processes', default=4, help='Specify number of cores used for multiprocessing. Default: 4.')
-    parser.add_argument('-g', '--graph', action='store_true', help='Set this flag to get a plot of results.')
+    parser.add_argument('-g', '--graph', default=None, help='Specify whether the results should be visualized by sum, average or median')
     parser.add_argument('-d', '--debug', nargs=2, help='Set this flag to run debug mode. If this flag is set, only the two given EMAs getting calculated with verbose output.')
     args = parser.parse_args()
 
     # Variables
     filename = args.file
-    outfile = args.outfile
+    outfile = os.path.splitext(str(args.outfile))[0]
     maxema = int(args.maxema)
     steps = int(args.steps) 
     start = int(args.start)
     n_processes = int(args.processes)
     pool = multiprocessing.Pool(processes=n_processes)
-    plot = args.graph
+    plot_by = args.graph
     results = {}
     
     # Checking arguments
@@ -154,45 +162,47 @@ def main():
                     current_progress += progress
                     if(current_progress > 99):
                         bar.next(100-current_progress)
-
     results = pd.DataFrame(results.items(), columns=['indicator', 'result'])
+    results_sum = results[results['indicator'].str.contains('SUM')]
+    results_avg = results[results['indicator'].str.contains('AVG')]
+    results_med = results[results['indicator'].str.contains('MED')]
     print('-------------------------------')
-    print('[+] Best indicator: ' + results['indicator'][results.result.idxmax()])
-    print('[+] Result: ' + str(round(results.result.max(), 2)))
+    print('[+] Best indicator (sum): ' + 
+        results['indicator'][results_sum.result.idxmax()] + 
+        ' | Result: ' + 
+        str(round(results_sum.result.max(), 2)))
+    print('[+] Best indicator (average): ' + 
+        results['indicator'][results_avg.result.idxmax()] + 
+        ' | Result: ' + 
+        str(round(results_avg.result.max(), 2)))
+    print('[+] Best indicator (median): ' + 
+        results['indicator'][results_med.result.idxmax()] + 
+        ' | Result: ' + 
+        str(round(results_med.result.max(), 2)))
     print('-------------------------------')
-    if outfile != None:
-        print('[+] Writing results to: ' + str(outfile))
-        results.to_csv(outfile)
-    if plot==True:
+    if outfile != 'None':
+        outfile_sum = outfile + '_SUM.csv'
+        outfile_avg = outfile + '_AVG.csv'
+        outfile_med = outfile + '_MED.csv' 
+        print('[+] Writing SUM results to: ' + outfile_sum)
+        print('[+] Writing AVG results to: ' + outfile_avg)
+        print('[+] Writing MED results to: ' + outfile_med)
+        results_sum.to_csv(outfile_sum)
+        results_avg.to_csv(outfile_avg)
+        results_med.to_csv(outfile_med)
+    if plot_by != None:
         print('[+] Showing plot of results..')
-        # Creating plot
-        fig = px.line(results, x='indicator', y='result')
-        fig.add_shape(
-            # Line Horizontal
-                type="line",
-                x0=0,
-                y0=results.result.max(),
-                x1=results.result.idxmax(),
-                y1=results.result.max(),
-                line=dict(
-                    color='red',
-                    width=1,
-                    dash="dashdot",
-                )
-        )
-        fig.add_shape(
-            # Line Vertical 
-                type="line",
-                x0=results.result.idxmax(),
-                y0=results.result.min(),
-                x1=results.result.idxmax(),
-                y1=results.result.max(),
-                line=dict(
-                    color='red',
-                    width=1,
-                    dash="dashdot",
-                )
-        )
+        # Plot results
+        if(plot_by == 'sum'):
+            fig = px.line(results_sum, x='indicator', y='result')
+        elif(plot_by == 'average'):
+            fig = px.line(results_avg, x='indicator', y='result')
+        elif(plot_by == 'median'):
+            fig = px.line(results_med, x='indicator', y='result')
+        else:
+            print('[!] Error in plotting results..')
+            exit()
+        
         fig.show()
 
 if __name__=='__main__':

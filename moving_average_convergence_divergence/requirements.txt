@@ -5,3 +5,4 @@ os
 progress
 multiprocessing
 plotly
+statistics
