@@ -21,15 +21,7 @@ python3 MACD.py -h # for help
 
 ```bash
 python3 MACD.py -f sample_data/GBPJPY_20191201_20200327/sub_data.csv -m 1000 -n 100 -p 4 -g -o out.csv 
-```
 
-### Debug mode
-```bash
-python3 MACD.py -f sample_data/GBPJPY_20191201_20200327/sub_data.csv -d 1000 -n 100
-```
-
-### Example output
-```
 [+] Reading in data..
 [+] Calculating EMAs..
 [+] Calculating best EMAs.. |################################| 100/100
@@ -41,8 +33,10 @@ python3 MACD.py -f sample_data/GBPJPY_20191201_20200327/sub_data.csv -d 1000 -n 
 [+] Showing plot of results..
 ```
 
-### Example output debug mode
-```
+### Debug mode
+```bash
+python3 MACD.py -f sample_data/GBPJPY_20191201_20200327/sub_data.csv -d 2000 2500
+
 [+] Reading in data..
 [!] Debug mode..
 [i] Bullish..
@@ -63,6 +57,4 @@ python3 MACD.py -f sample_data/GBPJPY_20191201_20200327/sub_data.csv -d 1000 -n 
 # # # # # # # # # # # # # # # # # # # #
 [i] Final result: 0.018999999999999906
 ```
-
-
 ---
