@@ -10,7 +10,7 @@ Get the most profitable exponential moving averages for MACD strategy.
 ### Install 
 Install python3 and python3-pip.
 To install the dependencies run the following command:
-```bash
+```
 pip3 install -r requirements.txt
 ```
 
@@ -19,7 +19,7 @@ pip3 install -r requirements.txt
 python3 MACD.py -h # for help
 ```
 
-```bash
+```
 python3 MACD.py -f sample_data/GBPJPY_20191201_20200327/sub_data.csv -m 1000 -n 100 -p 4 -g -o out.csv 
 
 [+] Reading in data..
@@ -34,7 +34,7 @@ python3 MACD.py -f sample_data/GBPJPY_20191201_20200327/sub_data.csv -m 1000 -n 
 ```
 
 ### Debug mode
-```bash
+```
 python3 MACD.py -f sample_data/GBPJPY_20191201_20200327/sub_data.csv -d 2000 2500
 
 [+] Reading in data..
