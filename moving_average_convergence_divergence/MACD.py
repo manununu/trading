@@ -10,9 +10,9 @@ import plotly.graph_objs as go
 
 dir = os.getcwd()
 
-def calc_emas(df, steps, maxema):
-    for i in range(steps, maxema+1):
-        if(i % steps ==0):
+def calc_emas(df, start, maxema, steps):
+    for i in range(start, maxema+1):
+        if(i % steps == 0 and i != 0):
             col_name = 'EMA' + str(i)
             df[col_name] = df['close'].ewm(span=i, adjust=False).mean()
 
@@ -60,10 +60,11 @@ def main():
 
     # Argument parser
     parser = argparse.ArgumentParser(description='Get most profitable moving averages for MACD strategy.') 
-    parser.add_argument('-f', '--file', type=argparse.FileType('r'), help='Input csv file with no header and the following columns: date, open, high, low, close')
+    parser.add_argument('-f', '--file', type=argparse.FileType('r'), help='Input csv file with no header and the following columns: date, open, high, low, close.')
     parser.add_argument('-o', '--outfile', default=None, help='Specify output file to save results in CSV format.')
-    parser.add_argument('-m', '--maxema', default=100, help='Specify the maximum EMA. Default: 100')
+    parser.add_argument('-m', '--maxema', default=100, help='Specify the maximum EMA. Default: 100.')
     parser.add_argument('-n', '--steps', default=10, help='Specify step size. Default: 10. E.g. when maximum EMA is 6 and step size equals 2, EMAs 2/4/6 are used.')
+    parser.add_argument('-s', '--start', default=0, help='Specify EMA to start with. Default: 0.')
     parser.add_argument('-p', '--processes', default=4, help='Specify number of cores used for multiprocessing. Default: 4.')
     parser.add_argument('-g', '--graph', action='store_true', help='Set this flag to get a plot of results.')
     parser.add_argument('-d', '--debug', nargs=2, help='Set this flag to run debug mode. If this flag is set, only the two given EMAs getting calculated with verbose output.')
@@ -74,6 +75,7 @@ def main():
     outfile = args.outfile
     maxema = int(args.maxema)
     steps = int(args.steps) 
+    start = int(args.start)
     n_processes = int(args.processes)
     pool = multiprocessing.Pool(processes=n_processes)
     plot = args.graph
@@ -132,7 +134,10 @@ def main():
     ## Regular mode 
     # Calculating EMA's
     print('[+] Calculating EMAs..')
-    calc_emas(df, steps, maxema)
+    try:
+        calc_emas(df, start, maxema, steps)
+    except:
+        print('[!] Error while calculating EMAs. Check provided values..')
 
     # Start processing
     current_progress = 0
